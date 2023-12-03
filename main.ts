@@ -77,12 +77,67 @@ class Field {
     this.fieldMatrix[rndRow][rndCol].cellValue = cellValue;
   }
   private renderField(): void {
+    this.addGValue();
     this.field = this.fieldMatrix.map((innerArray) => innerArray.map((node) => `${node.cellValue}-${node.currentNodeValue}`).join(" ")).join("\n");
   }
   getField(): string {
     return this.field;
   }
 
+  private addGValue(): void {
+    // loop 
+    for (let i = 0; i < this.fieldMatrix.length; i++) {
+      for (let j = 0; j < this.fieldMatrix[0].length - 1; j++) {
+        let currentNode = this.fieldMatrix[i][j].currentNodeValue;
+        // loop to left
+        if (j > 0) {
+          for (let k = this.fieldMatrix[0].length - 1; i >= 0; i--) {
+            if (this.fieldMatrix[i][k -1].scanned){
+              break;
+            }
+          }
+        }
+        // let nextNode =  this.fieldMatrix[k][j + 1];
+        // if (nextNode.cellValue === CellValue.hole || nextNode.scanned) { 
+        //   break; 
+        // }
+        // if (k > 0) {
+        //   if (!this.fieldMatrix[k - 1][j].scanned) {}
+        // }
+        // this.fieldMatrix[k][j + 1].previousNodeValue = currentNode;
+        // this.fieldMatrix[k][j + 1].currentNodeValue = currentNode + 1;
+        // this.fieldMatrix[k][j + 1].scanned = true;
+      }
+    }
+    for (let j = 0; j < this.fieldMatrix.length - 1; j++) {
+      for (let i = 0; i < this.fieldMatrix[0].length; i++) {
+        let currentNode = this.fieldMatrix[i][j].currentNodeValue;
+        let nextNode =  this.fieldMatrix[i + 1][j];
+        if (nextNode.cellValue === CellValue.hole || nextNode.scanned) { 
+          break; 
+        }
+        this.fieldMatrix[i + 1][j].previousNodeValue = currentNode;
+        this.fieldMatrix[i + 1][j].currentNodeValue = currentNode + 1;
+        this.fieldMatrix[i + 1][j].scanned = true;
+      }
+    }
+
+    // let row = 0;
+    // let column = 0;
+    // while (row < this.fieldMatrix.length && column < this.fieldMatrix[0].length) {
+    //   let currentNode = this.fieldMatrix[row][column].currentNodeValue;
+    //   if (this.fieldMatrix[row][column + 1] || this.fieldMatrix[row][column + 1].cellValue !== CellValue.hole) {
+    //     this.fieldMatrix[row][column + 1].previousNodeValue = currentNode;
+    //     this.fieldMatrix[row][column + 1].currentNodeValue = currentNode + 1;
+    //   }
+    // }
+  }
+
+  private checkForValidGame(): boolean {
+    
+    return false;
+  }
+  
   updatePath(inputDirection: string): boolean {
     const convertInputDirection = inputDirection.toString().toLocaleLowerCase();
     switch (convertInputDirection) {
