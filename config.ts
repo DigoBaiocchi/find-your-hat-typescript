@@ -1,5 +1,5 @@
 const config = {
-  height: 10,
+  height: 11,
   width: 10,
   numberOfHoles: 10,
 };

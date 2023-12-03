@@ -38,10 +38,20 @@ class Field {
     generateField() {
         for (let i = 0; i < config_1.default.height; i++) {
             for (let j = 0; j < config_1.default.width; j++) {
-                this.fieldMatrix[i][j] = CellValue.fieldCharacter;
+                this.fieldMatrix[i][j] = {
+                    cellValue: CellValue.fieldCharacter,
+                    previousNodeValue: 0,
+                    currentNodeValue: 0,
+                    scanned: false
+                };
             }
         }
-        this.fieldMatrix[0][0] = CellValue.pathCharacter;
+        this.fieldMatrix[0][0] = {
+            cellValue: CellValue.pathCharacter,
+            previousNodeValue: 0,
+            currentNodeValue: 0,
+            scanned: true
+        };
     }
     generateHoles() {
         for (let index = 0; index < this.numOfHoles; index++) {
@@ -52,17 +62,17 @@ class Field {
         this.generateRndPositions(CellValue.hat);
     }
     generateRndPositions(cellValue) {
-        let rndRow = Math.floor(Math.random() * config_1.default.width);
-        let rndCol = Math.floor(Math.random() * config_1.default.height);
-        while (this.fieldMatrix[rndRow][rndCol] == CellValue.hole ||
-            this.fieldMatrix[rndRow][rndCol] == CellValue.pathCharacter) {
-            rndRow = Math.floor(Math.random() * config_1.default.width);
-            rndCol = Math.floor(Math.random() * config_1.default.height);
+        let rndRow = Math.floor(Math.random() * config_1.default.height);
+        let rndCol = Math.floor(Math.random() * config_1.default.width);
+        while (this.fieldMatrix[rndRow][rndCol].cellValue == CellValue.hole ||
+            this.fieldMatrix[rndRow][rndCol].cellValue == CellValue.pathCharacter) {
+            rndRow = Math.floor(Math.random() * config_1.default.height);
+            rndCol = Math.floor(Math.random() * config_1.default.width);
         }
-        this.fieldMatrix[rndRow][rndCol] = cellValue;
+        this.fieldMatrix[rndRow][rndCol].cellValue = cellValue;
     }
     renderField() {
-        this.field = this.fieldMatrix.map((row) => row.join("")).join("\n");
+        this.field = this.fieldMatrix.map((innerArray) => innerArray.map((node) => `${node.cellValue}-${node.currentNodeValue}`).join(" ")).join("\n");
     }
     getField() {
         return this.field;
@@ -78,16 +88,16 @@ class Field {
                 }
                 else {
                     this.characterRowLocation--;
-                    if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] === CellValue.hole) {
+                    if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue === CellValue.hole) {
                         console.log('You fell in a hole... Game Over!');
                         return false;
                     }
-                    else if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] === CellValue.hat) {
+                    else if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue === CellValue.hat) {
                         console.log('You won!');
                         return false;
                     }
-                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] = CellValue.pathCharacter;
-                    this.fieldMatrix[this.characterRowLocation + 1][this.characterColumnLocation] = CellValue.fieldCharacter;
+                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue = CellValue.pathCharacter;
+                    this.fieldMatrix[this.characterRowLocation + 1][this.characterColumnLocation].cellValue = CellValue.fieldCharacter;
                     this.renderField();
                     return true;
                 }
@@ -99,16 +109,16 @@ class Field {
                 }
                 else {
                     this.characterRowLocation++;
-                    if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] === CellValue.hole) {
+                    if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue === CellValue.hole) {
                         console.log('You fell in a hole... Game Over!');
                         return false;
                     }
-                    else if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] === CellValue.hat) {
+                    else if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue === CellValue.hat) {
                         console.log('You won!');
                         return false;
                     }
-                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] = CellValue.pathCharacter;
-                    this.fieldMatrix[this.characterRowLocation - 1][this.characterColumnLocation] = CellValue.fieldCharacter;
+                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue = CellValue.pathCharacter;
+                    this.fieldMatrix[this.characterRowLocation - 1][this.characterColumnLocation].cellValue = CellValue.fieldCharacter;
                     this.renderField();
                     return true;
                 }
@@ -120,16 +130,16 @@ class Field {
                 }
                 else {
                     this.characterColumnLocation++;
-                    if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] === CellValue.hole) {
+                    if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue === CellValue.hole) {
                         console.log('You fell in a hole... Game Over!');
                         return false;
                     }
-                    else if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] === CellValue.hat) {
+                    else if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue === CellValue.hat) {
                         console.log('You won!');
                         return false;
                     }
-                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] = CellValue.pathCharacter;
-                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation - 1] = CellValue.fieldCharacter;
+                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue = CellValue.pathCharacter;
+                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation - 1].cellValue = CellValue.fieldCharacter;
                     this.renderField();
                     return true;
                 }
@@ -141,16 +151,16 @@ class Field {
                 }
                 else {
                     this.characterColumnLocation--;
-                    if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] === CellValue.hole) {
+                    if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue === CellValue.hole) {
                         console.log('You fell in a hole... Game Over!');
                         return false;
                     }
-                    else if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] === CellValue.hat) {
+                    else if (this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue === CellValue.hat) {
                         console.log('You won!');
                         return false;
                     }
-                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation] = CellValue.pathCharacter;
-                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation + 1] = CellValue.fieldCharacter;
+                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation].cellValue = CellValue.pathCharacter;
+                    this.fieldMatrix[this.characterRowLocation][this.characterColumnLocation + 1].cellValue = CellValue.fieldCharacter;
                     this.renderField();
                     return true;
                 }
